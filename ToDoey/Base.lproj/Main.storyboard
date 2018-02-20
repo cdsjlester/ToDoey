@@ -33,7 +33,16 @@
                             <outlet property="delegate" destination="IE3-Tv-dh4" id="X98-Ue-84R"/>
                         </connections>
                     </tableView>
-                    <navigationItem key="navigationItem" title="ToDoey" id="qXJ-Zg-NYh"/>
+                    <navigationItem key="navigationItem" title="ToDoey" largeTitleDisplayMode="never" id="qXJ-Zg-NYh">
+                        <barButtonItem key="rightBarButtonItem" systemItem="add" id="rkV-ss-XbF">
+                            <inset key="largeContentSizeImageInsets" minX="0.0" minY="1" maxX="0.0" maxY="0.0"/>
+                            <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            <connections>
+                                <action selector="addItem:" destination="IE3-Tv-dh4" id="Z5X-8y-YSz"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
+                    <simulatedTabBarMetrics key="simulatedBottomBarMetrics"/>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="0Hb-of-PwO" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
