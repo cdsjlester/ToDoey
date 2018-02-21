@@ -11,12 +11,17 @@ import UIKit
 class ToDoListViewController: UITableViewController {
     var toDoItemToAdd = UITextField()
     //let defaults = UserDefaults.standard
+    //place to save data
+    let datafilePath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first?.appendingPathComponent("Items.plist")
     var itemArray = [Item]()
     override func viewDidLoad() {
         super.viewDidLoad()
-        let newItem = Item()
-        newItem.title = "find Mike"
-        itemArray.append(newItem)
+
+//        let newItem = Item()
+//        newItem.title = "find Mike"
+//        itemArray.append(newItem)
+        loadItemsFromDisk()
+        //if we want to use user defaults
 //        if let  items = defaults.array(forKey: "Item") as? [Item]{
 //            itemArray = items
 //        }
@@ -31,7 +36,7 @@ class ToDoListViewController: UITableViewController {
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "ToDoItemCell", for: indexPath)
         let data = itemArray[indexPath.row]
-        
+        //if data.done == true set to checkmark else set to none
         cell.accessoryType = data.done  ? .checkmark : .none
         
 //        if data.done == true{
@@ -46,9 +51,8 @@ class ToDoListViewController: UITableViewController {
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         //toggle checkmark
         itemArray[indexPath.row].done = !itemArray[indexPath.row].done
-        
+        saveDataToDisk()
         tableView.cellForRow(at: indexPath)?.accessoryView?.tintColor = UIColor.green
-        tableView.reloadData()
         tableView.deselectRow(at: indexPath, animated: true)
         
     }
@@ -62,8 +66,8 @@ class ToDoListViewController: UITableViewController {
                 let data = Item()
                 data.title = self.toDoItemToAdd.text!
                 self.itemArray.append(data)
-                //self.defaults.set(self.itemArray, forKey: "Item")
-                self.tableView.reloadData()
+                self.saveDataToDisk()
+                
             }else{
                 //do something if no text
                 print (self.itemArray)
@@ -79,5 +83,31 @@ class ToDoListViewController: UITableViewController {
         present(alert, animated: true, completion: nil)
     }
     
+    
+    func saveDataToDisk(){
+        //self.defaults.set(self.itemArray, forKey: "Item")
+        let encoder = PropertyListEncoder()
+        do{let saveData = try encoder.encode(itemArray)
+            try saveData.write(to: datafilePath!)}
+        catch{print(error)}
+        tableView.reloadData()
+    }
+    
+    
+    
+    func loadItemsFromDisk(){
+        if let data = try? Data(contentsOf: datafilePath!)
+        {
+            let decoder = PropertyListDecoder()
+            do{
+                itemArray = try decoder.decode([Item].self, from: data)
+             
+            }catch{
+                print("could not load data!")
+            }
+            tableView.reloadData()
+       
+        }
+    }
 }
 
