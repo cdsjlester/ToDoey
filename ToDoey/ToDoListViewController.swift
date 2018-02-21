@@ -9,10 +9,14 @@
 import UIKit
 
 class ToDoListViewController: UITableViewController {
-var itemArray = ["Go Home", "get Groceries", "get AirBnB"]
+    var toDoItemToAdd = UITextField()
+    let defaults = UserDefaults.standard
+    var itemArray = ["Go Home", "get Groceries", "get AirBnB"]
     override func viewDidLoad() {
         super.viewDidLoad()
- 
+        if let  items = defaults.array(forKey: "Item") as? [String]{
+            itemArray = items
+        }
         
     }
 
@@ -38,23 +42,24 @@ var itemArray = ["Go Home", "get Groceries", "get AirBnB"]
     }
  
     @IBAction func addItem(_ sender: UIBarButtonItem) {
-       var toDoItemToAdd = UITextField()
+       
         let alert  = UIAlertController(title: "Add a New Item", message: "", preferredStyle: .alert)
         let action = UIAlertAction(title: "Add", style: .default) { (action) in
             //button clicked on alert
-            if toDoItemToAdd.text != ""{
-                self.itemArray.append(toDoItemToAdd.text!)
+            if self.toDoItemToAdd.text != ""{
+                self.itemArray.append(self.toDoItemToAdd.text!)
+                self.defaults.set(self.itemArray, forKey: "Item")
                 self.tableView.reloadData()
             }else{
                 //do something if no text
-                //print (self.tableView.indexPathForSelectedRow!)
+                print (self.itemArray)
                 self.tableView.reloadData()
             }
            
         }
         alert.addTextField { (alertTextField) in
             alertTextField.placeholder = ("create new item")
-            toDoItemToAdd = alertTextField
+            self.toDoItemToAdd = alertTextField
         }
         alert.addAction(action)
         present(alert, animated: true, completion: nil)
